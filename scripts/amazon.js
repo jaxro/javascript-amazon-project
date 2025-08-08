@@ -1,5 +1,5 @@
 //store the data...
-
+import {cart} from '../data/cart.js';
 //create the html....
 let productsHTML='';
 products.forEach((product)=>{
@@ -23,11 +23,11 @@ products.forEach((product)=>{
             </div>
 
             <div class="product-price">
-                $${(product.pricecents/100).toFixed(2)}
+                $${(product.priceCents/100).toFixed(2)}
             </div>
 
             <div class="product-quantity-container">
-                <select>
+                <select class="js-quantity-selector-${product.id}">
                 <option selected value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -43,7 +43,7 @@ products.forEach((product)=>{
 
             <div class="product-spacer"></div>
 
-            <div class="added-to-cart">
+            <div class="added-to-cart js-added-to-cart-${product.id}">
                 <img src="images/icons/checkmark.png">
                 Added
             </div>
@@ -56,6 +56,7 @@ products.forEach((product)=>{
 });
 
 document.querySelector('.js-product-grid').innerHTML=productsHTML;
+const addedTimeouts = new Map();
 
 document.querySelectorAll('.js-add-to-cart').forEach((button)=>{
     button.addEventListener('click',()=>{
@@ -67,15 +68,36 @@ document.querySelectorAll('.js-add-to-cart').forEach((button)=>{
                 matchingItem=item;
             }
         });
+        const quantitySelector=document.querySelector(`.js-quantity-selector-${productId}`);
+        
+        const quantityNumber = Number(quantitySelector.value);
+        console.log(quantityNumber);
+
+
         if (matchingItem){
-            matchingItem.quantity+=1;
+            if(quantityNumber===1){
+                matchingItem.quantity+=1;
+            }
+            else{
+                matchingItem.quantity+=quantityNumber;
+                //console.log(`this is the item quantity we added ${matchingItem.quantity}`);
+            };
         }
         else{
-            cart.push({
-            productId:productId,
-            quantity:1
-        });
+            if(quantityNumber===1){
+                cart.push({
+                productId:productId,
+                quantity:1
+                });
+            }
+            else{
+                cart.push({
+                    productId,
+                    quantity:quantityNumber
+                });
+            }
         }
+        
         let cartQuantity=0;
         cart.forEach((item)=>{
             cartQuantity+=item.quantity;
@@ -83,7 +105,24 @@ document.querySelectorAll('.js-add-to-cart').forEach((button)=>{
         //console.log(cartQuantity);
 
         document.querySelector('.js-cart-quantity').innerHTML=cartQuantity;
-        
-        console.log(cart);
+        const addedMessage= document.querySelector(`.js-added-to-cart-${productId}`);
+        addedMessage.classList.add('added-to-cart-visible');
+         // If a timeout already exists, clear it
+        if (addedTimeouts.has(productId)) {
+            clearTimeout(addedTimeouts.get(productId));
+        }
+        // Set a new timeout and store its ID
+        const timeoutId = setTimeout(() => {
+            addedMessage.classList.remove('added-to-cart-visible');
+            addedTimeouts.delete(productId); // clean up
+        }, 2000);
+        addedTimeouts.set(productId, timeoutId);
+
+        // ye maine kiya
+        /*setTimeout(()=>{
+            addedMessage.classList.remove('added-to-cart-visible');
+        },2000);
+        console.log(cart);*/
+
     });
 });
