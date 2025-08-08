@@ -54,6 +54,7 @@ products.forEach((product)=>{
             </div>
         `;
 });
+
 document.querySelector('.js-product-grid').innerHTML=productsHTML;
 
 document.querySelectorAll('.js-add-to-cart').forEach((button)=>{
