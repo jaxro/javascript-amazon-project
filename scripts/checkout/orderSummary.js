@@ -3,7 +3,7 @@ import { products, getProducts } from "../../data/products.js";
 import { formatCurrency } from "../utils/money.js";
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 import {deliveryOptions, getDeliveryOption} from '../../data/deliveryOptions.js';
-
+import { renderPaymentSummary } from "./paymentSummary.js";
 //const deliveryOptionId
 
 // Calculate total quantity from cart
@@ -123,9 +123,9 @@ export function renderOrderSummary(){
 
             const container=document.querySelector(`.js-cart-item-container-${productId}`);
             container.remove();
-            console.log(container);
-        })
-    })
+            renderPaymentSummary();
+        });
+    });
 
     // to update the delivery optioin in cart.js and in check out page top 
     document.querySelectorAll('.js-delivery-option')
@@ -136,6 +136,8 @@ export function renderOrderSummary(){
                 renderOrderSummary(); // refresh karne ki zarurat na padey issliye sara code ek function /n
                 //  ke andar daal diya taaki saara updated
                 //  maal hamye hamey aise miljaye without refresh 
+
+                renderPaymentSummary();
 
             });
         });
