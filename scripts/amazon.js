@@ -1,5 +1,5 @@
 //store the data...
-import {cart, addToCart} from '../data/cart.js';
+import {cart, addToCart, updateCartQuantity, saveToStorage} from '../data/cart.js';
 import {products} from '../data/products.js';
 import { formatCurrency } from './utils/money.js';
 //create the html....
@@ -58,18 +58,13 @@ products.forEach((product)=>{
 });
 
 document.querySelector('.js-product-grid').innerHTML=productsHTML;
+updateCartQuantity();
 const addedTimeouts = new Map();
 
 
 
 
-function updateCartQuantity(){
-    let cartQuantity=0;
-        cart.forEach((cartItem)=>{
-            cartQuantity+=cartItem.quantity;
-        });
-    document.querySelector('.js-cart-quantity').innerHTML=cartQuantity;
-}
+
 function addedToCartMessage(productId){
         const addedMessage= document.querySelector(`.js-added-to-cart-${productId}`);
         addedMessage.classList.add('added-to-cart-visible');
@@ -103,6 +98,7 @@ document.querySelectorAll('.js-add-to-cart').forEach((button)=>{
         //console.log(cartQuantity);
 
         addedToCartMessage(productId);
+       
         
     });
 });
